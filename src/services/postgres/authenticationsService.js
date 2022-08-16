@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const { Pool } = require('pg');
+const InvariantError = require('../../exception/invariantError');
 
 class AuthenticationsService {
   constructor() {
@@ -13,6 +14,19 @@ class AuthenticationsService {
     };
 
     await this._pool.query(query);
+  }
+
+  async verifyRefreshToken(token) {
+    const query = {
+      text: 'SELECT token FROM authentications WHERE token = $1',
+      values: [token],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new InvariantError('Refresh token tidak valid');
+    }
   }
 }
 
