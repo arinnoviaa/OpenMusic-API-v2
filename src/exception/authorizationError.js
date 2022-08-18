@@ -1,5 +1,5 @@
 /* eslint-disable require-jsdoc */
-import ClientError from './clientError';
+const ClientError = require('./clientError');
 
 class AuthorizationError extends ClientError {
   constructor(message) {
@@ -8,4 +8,4 @@ class AuthorizationError extends ClientError {
   }
 }
 
-export default AuthorizationError;
+module.exports = AuthorizationError;
