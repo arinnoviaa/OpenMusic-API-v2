@@ -56,12 +56,17 @@ class PlaylistsHandler {
 
   async getPlaylistsHandler(request) {
     const { id: credentialId } = request.auth.credentials;
-    const playlists = await this._service.getPlaylists(credentialId);
+
+    const filteredPlaylists = await this._service.getPlaylists(credentialId);
 
     return {
       status: 'success',
       data: {
-        playlists,
+        playlists: filteredPlaylists.map((playlists) => ({
+          id: playlists.id,
+          name: playlists.name,
+          username: playlists.username,
+        })),
       },
     };
   }
@@ -100,6 +105,7 @@ class PlaylistsHandler {
   async postSongToPlaylistHandler(request, h) {
     try {
       this._validator.validatePlaylistSongPayload(request.payload);
+
       const { id: playlistId } = request.params;
       const { songId } = request.payload;
       const { id: credentialId } = request.auth.credentials;

@@ -1,15 +1,13 @@
 /* eslint-disable no-console */
-
+/* eslint-disable no-underscore-dangle */
 const ClientError = require('../../exception/clientError');
 
-/* eslint-disable no-underscore-dangle */
 class AlbumsHandler {
   constructor(service, validator) {
     this._service = service;
     this._validator = validator;
 
     this.postAlbumHandler = this.postAlbumHandler.bind(this);
-    this.getAlbumsHandler = this.getAlbumsHandler.bind(this);
     this.getAlbumByIdHandler = this.getAlbumByIdHandler.bind(this);
     this.putAlbumByIdHandler = this.putAlbumByIdHandler.bind(this);
     this.deleteAlbumByIdHandler = this.deleteAlbumByIdHandler.bind(this);
@@ -51,25 +49,18 @@ class AlbumsHandler {
     }
   }
 
-  async getAlbumsHandler() {
-    const albums = await this._service.getAlbums();
-    return {
-      status: 'success',
-      data: {
-        albums,
-      },
-    };
-  }
-
   async getAlbumByIdHandler(request, h) {
     try {
       const { id } = request.params;
       const album = await this._service.getAlbumById(id);
+      const songs = await this._service.getSongsByAlbumId(id);
+
+      const albumContainsSongs = { ...album, songs };
 
       return {
         status: 'success',
         data: {
-          album,
+          album: albumContainsSongs,
         },
       };
     } catch (error) {

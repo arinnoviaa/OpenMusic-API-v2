@@ -12,8 +12,15 @@ exports.up = (pgm) => {
       type: 'VARCHAR(50)',
     },
   });
+
+  pgm.addConstraint(
+    'playlists',
+    'fk_users.owner_users.id',
+    'FOREIGN KEY(owner) REFERENCES users(id) ON DELETE CASCADE',
+  );
 };
 
 exports.down = (pgm) => {
+  pgm.dropConstraint('playlists', 'fk_users.owner_users.id');
   pgm.dropTable('playlists');
 };
