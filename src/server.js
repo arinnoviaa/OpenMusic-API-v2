@@ -60,7 +60,6 @@ const init = async () => {
     },
   ]);
 
-  // mendefinisikan strategy autentikasi jwt
   server.auth.strategy('openmusicapp_jwt', 'jwt', {
     keys: process.env.ACCESS_TOKEN_KEY,
     verify: {
@@ -111,8 +110,7 @@ const init = async () => {
     {
       plugin: playlists,
       options: {
-        playlistsService,
-        usersService,
+        service: playlistsService,
         validator: PlaylistsValidator,
       },
     },
