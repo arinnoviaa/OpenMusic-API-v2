@@ -21,6 +21,7 @@
   "homepage": "https://github.com/arinnoviaa/OpenMusic-API-v1#readme",
   "dependencies": {
     "@hapi/hapi": "^20.2.2",
+    "@hapi/inert": "^7.0.0",
     "@hapi/jwt": "^2.1.1",
     "amqplib": "^0.10.2",
     "bcrypt": "^5.0.1",

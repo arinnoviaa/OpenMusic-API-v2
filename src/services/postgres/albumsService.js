@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
-const { nanoid } = require('nanoid');
 const { Pool } = require('pg');
+const { nanoid } = require('nanoid');
 const InvariantError = require('../../exception/invariantError');
 const NotFoundError = require('../../exception/notFoundError');
 const { mapDBToModelSongs } = require('../../utils');
@@ -11,7 +11,7 @@ class AlbumsService {
   }
 
   async addAlbum({ name, year }) {
-    const id = `album-${nanoid(16)}`;
+    const id = nanoid(16);
 
     const query = {
       text: 'INSERT INTO albums VALUES($1, $2, $3) RETURNING id',
@@ -21,7 +21,7 @@ class AlbumsService {
     const result = await this._pool.query(query);
 
     if (!result.rows[0].id) {
-      throw new InvariantError('Album gagal ditambahkan');
+      throw new InvariantError('Albums gagal ditambahkan');
     }
 
     return result.rows[0].id;
@@ -43,14 +43,14 @@ class AlbumsService {
 
   async editAlbumById(id, { name, year }) {
     const query = {
-      text: 'UPDATE albums SET name=$1, year =$2 WHERE id=$3 RETURNING id',
+      text: 'UPDATE albums SET name = $1, year = $2 WHERE id = $3 RETURNING id',
       values: [name, year, id],
     };
 
     const result = await this._pool.query(query);
 
     if (!result.rows.length) {
-      throw new NotFoundError('Gagal memperbarui album. Id tidak ditemukan');
+      throw new NotFoundError('Gagal memperbarui albums. Id tidak ditemukan');
     }
   }
 
@@ -63,7 +63,7 @@ class AlbumsService {
     const result = await this._pool.query(query);
 
     if (!result.rows.length) {
-      throw new NotFoundError('album gagal dihapus. Id tidak ditemukan');
+      throw new NotFoundError('Albums gagal dihapus. Id tidak ditemukan');
     }
   }
 
@@ -74,6 +74,19 @@ class AlbumsService {
     };
     const result = await this._pool.query(query);
     return result.rows.map(mapDBToModelSongs);
+  }
+
+  async addCoverAlbumById(id, coverUrl) {
+    const query = {
+      text: 'UPDATE albums SET "coverUrl" = $2 WHERE id = $1 RETURNING id',
+      values: [id, coverUrl],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rows.length) {
+      throw new NotFoundError('Gagal memperbarui cover. Id tidak ditemukan');
+    }
   }
 }
 
